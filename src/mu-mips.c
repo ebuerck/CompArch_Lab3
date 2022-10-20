@@ -328,6 +328,14 @@ void handle_pipeline()
 void WB()
 {
 	/*IMPLEMENT THIS*/
+	// In this stage, we write the result back into the destination register in register file.
+	// The result may come from LMD or ALUOutput depending on the instruction.
+	// for register-register instruction: REGS[rd] <= ALUOutput
+
+	// for register-immediate instruction: REGS[rt] <= ALUOutput
+
+	// for load instruction: REGS[rt] <= LMD
+
 	++INSTRUCTION_COUNT;
 }
 
