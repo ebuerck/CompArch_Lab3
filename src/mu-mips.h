@@ -53,7 +53,7 @@ typedef struct CPU_Pipeline_Reg_Struct{
 	uint32_t imm;
 	uint32_t ALUOutput;
 	uint32_t LMD;
-	
+
 } CPU_Pipeline_Reg;
 
 /***************************************************************/
@@ -103,3 +103,8 @@ void show_pipeline();/*IMPLEMENT THIS*/
 void initialize();
 void print_program(); /*IMPLEMENT THIS*/
 
+
+
+/***************************************************************/
+/* Helper Functions                                                                                              */
+/***************************************************************/
