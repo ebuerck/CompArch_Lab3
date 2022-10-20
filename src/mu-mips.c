@@ -404,7 +404,7 @@ void IF()
 	/*IMPLEMENT THIS*/
 	// The instruction is fetched from memory into the instruction register (IR) by using the current program counter (PC).
 	// IR <= Mem[PC]
-	// ???
+
 	// The PC is then incremented by 4 to address the next instruction.
 	// PC <= PC + 4
 	CURRENT_STATE.PC += 4;
