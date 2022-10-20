@@ -327,6 +327,7 @@ void handle_pipeline()
 void WB()
 {
 	/*IMPLEMENT THIS*/
+	++INSTRUCTION_COUNT;
 }
 
 /************************************************************/
