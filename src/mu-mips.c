@@ -362,17 +362,28 @@ void EX()
 	/*IMPLEMENT THIS*/
 	// In this stage, we have an ALU that operates on the operands that were read in the previous stage.
 	// We can perform one of three functions depending on the instruction type.
-	// i) Memory Reference (load/store):
-	// ALUOutput <= A + imm
-
 	// ALU adds two operands to form the effective address and stores the result into register called ALUOutput.
+
+	// FIX THE 2 LINES BELOW!!!
+	MIPS instruction;
+	getSingleInstruction(&instruction);
+
 	// ii) Register-register Operation
 	// ALUOutput <= A op B
+	if (!strcmp(instruction.opcode, "000000")) {
 
+	}
+	// i) Memory Reference (load/store):
+	// ALUOutput <= A + imm
+	else if (1) {
+
+	}
 	// ALU performs the operation specified by the instruction on the values stored in temporary registers A and B and places the result into ALUOutput.
 	// iii) Register-Immediate Operation
 	// ALUOutput <= A op imm
+	else {
 
+	}
 	// ALU performs the operation specified by the instruction on the value stored in temporary register A and value in register imm and places the result into ALUOutput.
 }
 
