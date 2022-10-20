@@ -6,7 +6,7 @@
 #include <ctype.h>
 
 #include "mu-mips.h"
-\
+
 /***************************************************************/
 /* Print out a list of commands available                                                                  */
 /***************************************************************/
@@ -386,6 +386,11 @@ void ID()
 	// rs and rt are the register specifiers that indicate which registers to read from.
 	// The values read from register file are placed into two temporary registers called A and B.
 	// he values stored in A and B will be used in upcoming cycles by other stages (e.g., EX, or MEM).
+	MIPS instruction;
+	getSingleInstruct(&instruction);
+	ID_EX.A = instruction.rs;
+	ID_EX.B = instruction.rt;
+	ID_EX.imm = instruction.immediate;
 	// A <= REGS[rs]
 
 	// B <= REGS[rt]
@@ -404,10 +409,12 @@ void IF()
 	/*IMPLEMENT THIS*/
 	// The instruction is fetched from memory into the instruction register (IR) by using the current program counter (PC).
 	// IR <= Mem[PC]
+	CURRENT_STATE = NEXT_STATE;
+	IF_ID.IR = mem_read_32(NEXT_STATE.PC);
 
 	// The PC is then incremented by 4 to address the next instruction.
 	// PC <= PC + 4
-	CURRENT_STATE.PC += 4;
+	NEXT_STATE.PC += 4;
 	// IR is used to hold the instruction (that is 32-bit) that will be needed in subsequent cycle during the instruction decode stage.
 }
 
@@ -952,6 +959,47 @@ void print_instruction(uint32_t addr){
 		}
 		case 'J': {
 			returnJFormat(fullbinay,&junk);
+			break;
+		}
+		default: {
+			printf("You messed up.\n");
+			break;
+		}
+	}
+}
+
+void getSingleInstruct(MIPS* instrAddress){
+	uint32_t instr = mem_read_32(IF_ID.PC);
+
+	char string[9];
+	sprintf(string,"%08x", instr);
+
+	char fullbinary[33];
+	fullbinary[0] = '\0';
+
+	for(int i = 0; i < 9; i++)
+	{
+		strcat(fullbinary, hex_to_binary(string[i]));
+	}
+
+	// Check for syscall
+	if(instr == 0xC){
+		instrAddress->op = "SYSCALL";
+		printf("SYSCALL\n");
+		return;
+	}
+
+	switch(FindFormat(fullbinary)) {
+		case 'R': {
+			returnRFormat(fullbinary,instrAddress);
+			break;
+		}
+		case 'I': {
+			returnIFormat(fullbinary,instrAddress);
+			break;
+		}
+		case 'J': {
+			returnJFormat(fullbinary,instrAddress);
 			break;
 		}
 		default: {

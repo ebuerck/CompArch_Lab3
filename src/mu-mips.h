@@ -70,8 +70,8 @@ uint32_t PROGRAM_SIZE; /*in words*/
 /***************************************************************/
 /* Pipeline Registers.                                                                                                        */
 /***************************************************************/
-CPU_Pipeline_Reg ID_IF;
-CPU_Pipeline_Reg IF_EX;
+CPU_Pipeline_Reg IF_ID;
+CPU_Pipeline_Reg ID_EX;
 CPU_Pipeline_Reg EX_MEM;
 CPU_Pipeline_Reg MEM_WB;
 
@@ -101,7 +101,7 @@ void ID();/*IMPLEMENT THIS*/
 void IF();/*IMPLEMENT THIS*/
 void show_pipeline();/*IMPLEMENT THIS*/
 void initialize();
-void print_program(); /*IMPLEMENT THIS*/
+void print_program();
 
 
 
