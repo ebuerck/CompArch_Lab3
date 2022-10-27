@@ -368,11 +368,11 @@ void EX()
 
 	// FIX THE 2 LINES BELOW!!!
 	MIPS instruction;
-	getSingleInstruction(&instruction);
+	getSingleInstruct(&instruction,ID_EX.PC);
 
 	// ii) Register-register Operation
 	// ALUOutput <= A op B
-	if (!strcmp(instruction.opcode, "000000")) {
+	if (!strcmp(instruction.op, "000000")) {
 
 	}
 	// i) Memory Reference (load/store):
@@ -400,7 +400,7 @@ void ID()
 	// The values read from register file are placed into two temporary registers called A and B.
 	// he values stored in A and B will be used in upcoming cycles by other stages (e.g., EX, or MEM).
 	MIPS instruction;
-	getSingleInstruct(&instruction);
+	getSingleInstruct(&instruction,IF_ID.PC);
 	ID_EX.A = instruction.rs;
 	ID_EX.B = instruction.rt;
 	ID_EX.imm = instruction.immediate;
@@ -981,8 +981,8 @@ void print_instruction(uint32_t addr){
 	}
 }
 
-void getSingleInstruct(MIPS* instrAddress){
-	uint32_t instr = mem_read_32(IF_ID.PC);
+void getSingleInstruct(MIPS* instrAddress, uint32_t addr){
+	uint32_t instr = mem_read_32(addr);
 
 	char string[9];
 	sprintf(string,"%08x", instr);
