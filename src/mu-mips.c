@@ -387,16 +387,47 @@ void EX()
 			EX_MEM.HI = product >> 32;
 			EX_MEM.LO = (product << 32) >> 32;
 		}
-
-
+		// DIV & DIVU
+		else if(!strcmp(instruction.funct, "011010") || !strcmp(instruction.funct, "011011")){
+			EX_MEM.HI = ID_EX.A % ID_EX.B;
+			EX_MEM.LO = ID_EX.A / ID_EX.B;
+		}
+		// AND
+		else if(!strcmp(instruction.funct, "100100")){
+			output = ID_EX.A & ID_EX.B;
+		}
+		// OR
+		else if(!strcmp(instruction.funct, "100101")){
+			output = ID_EX.A | ID_EX.B;
+		}
+		// XOR
+		else if(!strcmp(instruction.funct, "100110")){
+			output = ID_EX.A ^ ID_EX.B;
+		}
+		// NOR
+		else if(!strcmp(instruction.funct, "100111")){
+			output = !(ID_EX.A | ID_EX.B);
+		}
+		// SLT
+		else if(!strcmp(instruction.funct, "100111")){
+			output = (ID_EX.A < ID_EX.B) ? 1 : 0;
+		}
+		// SLL
+		else if(!strcmp(instruction.funct, "000000")){
+			output = ID_EX.A << instruction.shamt;
+		}
+		// SRL
+		else if(!strcmp(instruction.funct, "000010")){
+			output = ID_EX.A >> instruction.shamt;
+		}
+		// SRA
+		else if(!strcmp(instruction.funct, "000011")){
+			output = ID_EX.A >> instruction.shamt;
+		}
 
 	}
 	// i) Memory Reference (load/store):
 	// ALUOutput <= A + imm
-<<<<<<< HEAD
-	else if (1) {
-
-=======
 	else if (!strcmp(instruction.op, "100100") ||
 		!strcmp(instruction.op, "100101") ||
 		!strcmp(instruction.op, "110000") ||
@@ -406,8 +437,7 @@ void EX()
 		!strcmp(instruction.op, "111000") ||
 		!strcmp(instruction.op, "101001") ||
 		!strcmp(instruction.op, "101011")) {
-		
->>>>>>> 0f50d687c5e585036f4b81ef58158de184d0dd6f
+
 	}
 	// ALU performs the operation specified by the instruction on the values stored in temporary registers A and B and places the result into ALUOutput.
 	// iii) Register-Immediate Operation
@@ -416,6 +446,7 @@ void EX()
 
 	}
 	// ALU performs the operation specified by the instruction on the value stored in temporary register A and value in register imm and places the result into ALUOutput.
+	EX_MEM.ALUOutput = output;
 }
 
 /************************************************************/
