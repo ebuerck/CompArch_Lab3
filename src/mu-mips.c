@@ -378,7 +378,7 @@ void EX()
 	// i) Memory Reference (load/store):
 	// ALUOutput <= A + imm
 	else if (1) {
-
+		
 	}
 	// ALU performs the operation specified by the instruction on the values stored in temporary registers A and B and places the result into ALUOutput.
 	// iii) Register-Immediate Operation
