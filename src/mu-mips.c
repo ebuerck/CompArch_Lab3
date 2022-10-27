@@ -377,7 +377,15 @@ void EX()
 	}
 	// i) Memory Reference (load/store):
 	// ALUOutput <= A + imm
-	else if (1) {
+	else if (!strcmp(instruction.op, "100100") ||
+		!strcmp(instruction.op, "100101") ||
+		!strcmp(instruction.op, "110000") ||
+		!strcmp(instruction.op, "001111") ||
+		!strcmp(instruction.op, "100011") ||
+		!strcmp(instruction.op, "101000") ||
+		!strcmp(instruction.op, "111000") ||
+		!strcmp(instruction.op, "101001") ||
+		!strcmp(instruction.op, "101011")) {
 		
 	}
 	// ALU performs the operation specified by the instruction on the values stored in temporary registers A and B and places the result into ALUOutput.
