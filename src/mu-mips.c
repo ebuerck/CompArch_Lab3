@@ -366,7 +366,7 @@ void EX()
 	// We can perform one of three functions depending on the instruction type.
 	// ALU adds two operands to form the effective address and stores the result into register called ALUOutput.
 
-	uint32_t output;
+	uint32_t output = 0;
 	MIPS instruction;
 	getSingleInstruct(&instruction,ID_EX.PC);
 
@@ -384,13 +384,13 @@ void EX()
 		// MULT & MULTU
 		else if(!strcmp(instruction.funct, "011000") || !strcmp(instruction.funct, "011001")){
 			uint64_t product = ID_EX.A * ID_EX.B;
-			EX_MEM.HI = product >> 32;
-			EX_MEM.LO = (product << 32) >> 32;
+			CURRENT_STATE.HI = product >> 32;
+			CURRENT_STATE.LO = (product << 32) >> 32;
 		}
 		// DIV & DIVU
 		else if(!strcmp(instruction.funct, "011010") || !strcmp(instruction.funct, "011011")){
-			EX_MEM.HI = ID_EX.A % ID_EX.B;
-			EX_MEM.LO = ID_EX.A / ID_EX.B;
+			CURRENT_STATE.HI = ID_EX.A % ID_EX.B;
+			CURRENT_STATE.LO = ID_EX.A / ID_EX.B;
 		}
 		// AND
 		else if(!strcmp(instruction.funct, "100100")){
@@ -465,7 +465,6 @@ void EX()
 		// ALU performs the operation specified by the instruction on the values stored in temporary registers A and B and places the result into ALUOutput.
 		// iii) Register-Immediate Operation
 		// ALUOutput <= A op imm
-		else if(1);
 	}
 	// ALU performs the operation specified by the instruction on the value stored in temporary register A and value in register imm and places the result into ALUOutput.
 	EX_MEM.ALUOutput = output;
