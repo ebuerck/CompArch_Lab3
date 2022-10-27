@@ -426,24 +426,46 @@ void EX()
 		}
 
 	}
-	// i) Memory Reference (load/store):
-	// ALUOutput <= A + imm
-	else if (!strcmp(instruction.op, "100100") ||
-		!strcmp(instruction.op, "100101") ||
-		!strcmp(instruction.op, "110000") ||
-		!strcmp(instruction.op, "001111") ||
-		!strcmp(instruction.op, "100011") ||
-		!strcmp(instruction.op, "101000") ||
-		!strcmp(instruction.op, "111000") ||
-		!strcmp(instruction.op, "101001") ||
-		!strcmp(instruction.op, "101011")) {
-
-	}
-	// ALU performs the operation specified by the instruction on the values stored in temporary registers A and B and places the result into ALUOutput.
-	// iii) Register-Immediate Operation
-	// ALUOutput <= A op imm
 	else {
+		// i) Memory Reference (load/store):
+		// ALUOutput <= A + imm
+		if(!strcmp(instruction.op, "LW")) {
 
+		}
+		else if(!strcmp(instruction.op, "LB")) {
+
+		}
+		else if(!strcmp(instruction.op, "LH")) {
+
+		}
+		else if(!strcmp(instruction.op, "LUI")) {
+
+		}
+		else if(!strcmp(instruction.op, "SW")) {
+
+		}
+		else if(!strcmp(instruction.op, "SB")) {
+
+		}
+		else if(!strcmp(instruction.op, "SH")) {
+
+		}
+		else if(!strcmp(instruction.op, "MFHI")) {
+
+		}
+		else if(!strcmp(instruction.op, "MFLO")) {
+
+		}
+		else if(!strcmp(instruction.op, "MTHI")) {
+
+		}
+		else if(!strcmp(instruction.op, "MTLO")) {
+
+		}
+		// ALU performs the operation specified by the instruction on the values stored in temporary registers A and B and places the result into ALUOutput.
+		// iii) Register-Immediate Operation
+		// ALUOutput <= A op imm
+		else if(1);
 	}
 	// ALU performs the operation specified by the instruction on the value stored in temporary register A and value in register imm and places the result into ALUOutput.
 	EX_MEM.ALUOutput = output;
