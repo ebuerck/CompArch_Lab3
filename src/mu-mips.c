@@ -460,87 +460,61 @@ void EX()
 	else {
 		// i) Memory Reference (load/store):
 		// ALUOutput <= A + imm
-<<<<<<< HEAD
-		if(!strcmp(instruction.op, "LW")) {
-			
-			EX_MEM.op_type = 4; // 4 = load op
-		}
-		else if(!strcmp(instruction.op, "LB")) {
-			EX_MEM.op_type = 4; // 4 = load op
-		}
-		else if(!strcmp(instruction.op, "LH")) {
-			EX_MEM.op_type = 4; // 4 = load op
-		}
-		else if(!strcmp(instruction.op, "LUI")) {
-			EX_MEM.op_type = 4; // 4 = load op
-		}
-		else if(!strcmp(instruction.op, "SW")) {
-
-			EX_MEM.op_type = 5; // 5 = store op 
-		}
-		else if(!strcmp(instruction.op, "SB")) {
-			EX_MEM.op_type = 5; // 5 = store op
-		}
-		else if(!strcmp(instruction.op, "SH")) {
-			EX_MEM.op_type = 5; // 5 = store op
-		}	
-		else if(!strcmp(instruction.op, "MFHI")) {
-			EX_MEM.op_type = 4; // 4 = load op
-		}
-		else if(!strcmp(instruction.op, "MFLO")) {
-			EX_MEM.op_type = 4; // 4 = load op
-		}
-		else if(!strcmp(instruction.op, "MTHI")) {
-			EX_MEM.op_type = 4; // 4 = load op
-		}
-		else if(!strcmp(instruction.op, "MTLO")) {
-			EX_MEM.op_type = 4; // 4 = load op
-=======
 		// LW
 		if(!strcmp(instruction.op, "100011")) {
 			output = CURRENT_STATE[ID_EX.A] + instruction.imm;
+			EX_MEM.op_type = 4;
 		}
 		// LB
 		else if(!strcmp(instruction.op, "100000")) {
 			output = instruction.imm;
+			EX_MEM.op_type = 4;
 		}
 		// LH
 		else if(!strcmp(instruction.op, "100001")) {
 			output = CURRENT_STATE[ID_EX.A] >> 16;
+			EX_MEM.op_type = 4;
 		}
 		// LUI
 		else if(!strcmp(instruction.op, "001111")) {
 			output = instruction.op >> 16;
+			EX_MEM.op_type = 4;
 		}
 		// SW
 		else if(!strcmp(instruction.op, "101011")) {
 			// What is the difference between this and LW?
 			output = CURRENT_STATE[ID_EX.A] + instruction.imm;
+			EX_MEM.op_type = 5;
 		}
 		// SB
 		else if(!strcmp(instruction.op, "101000")) {
 			output = (CURRENT_STATE[ID_EX.A] + instruction.imm) >> 7;
+			EX_MEM.op_type = 5;
 		}
 		// SH
 		else if(!strcmp(instruction.op, "101001")) {
 			output = (CURRENT_STATE[ID_EX.A] + instruction.imm) >> 15;
+			EX_MEM.op_type = 5;
 		}
 		// MFHI
 		else if(!strcmp(instruction.op, "010000")) {
 			output = CURRENT_STATE.HI;
+			EX_MEM.op_type = 4;
 		}
 		// MFLO
 		else if(!strcmp(instruction.op, "010010")) {
 			output = CURRENT_STATE.LO;
+			EX_MEM.op_type = 4;
 		}
 		// MTHI
 		else if(!strcmp(instruction.op, "010001")) {
 			CURRENT_STATE.HI = CURRENT_STATE[ID_EX.A];
+			EX_MEM.op_type = 4;
 		}
 		// MTLO
 		else if(!strcmp(instruction.op, "010011")) {
 			CURRENT_STATE.LO = CURRENT_STATE[ID_EX.A];
->>>>>>> cf83046ff7100c1c71a52ac67d8e695ebbcff2ec
+			EX_MEM.op_type = 4;
 		}
 	}
 
