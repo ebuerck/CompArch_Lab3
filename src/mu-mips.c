@@ -386,6 +386,7 @@ void EX()
 			uint64_t product = ID_EX.A * ID_EX.B;
 			CURRENT_STATE.HI = product >> 32;
 			CURRENT_STATE.LO = (product << 32) >> 32;
+			printf("Test\n");
 		}
 		// DIV & DIVU
 		else if(!strcmp(instruction.funct, "011010") || !strcmp(instruction.funct, "011011")){
