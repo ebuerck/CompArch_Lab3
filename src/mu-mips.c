@@ -453,8 +453,31 @@ void EX()
 	// iii) Register-Immediate Operation
 	// ALUOutput <= A op imm
 
-	EX_MEM.op_type = 3; // 3 = imm to reg op 
-
+	// ADDI ADDIU
+	if(!strcmp(instruction.op, "001000") || !strcmp(instruction.op, "001001")){
+		output = CURRENT_STATE.REGS[ID_EX.A] + CURRENT_STATE.REGS[ID_EX.imm];
+		EX_MEM.op_type = 3; // 3 = imm to reg op 
+	}
+	// ANDI
+	if(!strcmp(instruction.op, "001100")){
+		output = CURRENT_STATE.REGS[ID_EX.A] & CURRENT_STATE.REGS[ID_EX.imm];
+		EX_MEM.op_type = 3; // 3 = imm to reg op 
+	}
+	// ORI
+	if(!strcmp(instruction.op, "001101")){
+		output = CURRENT_STATE.REGS[ID_EX.A] | CURRENT_STATE.REGS[ID_EX.imm];
+		EX_MEM.op_type = 3; // 3 = imm to reg op 
+	}
+	// XORI
+	if(!strcmp(instruction.op, "001110")){
+		output = CURRENT_STATE.REGS[ID_EX.A] ^ CURRENT_STATE.REGS[ID_EX.imm];
+		EX_MEM.op_type = 3; // 3 = imm to reg op 
+	}
+	// SLTI
+	if(!strcmp(instruction.op, "001010")){
+		output = (CURRENT_STATE.REGS[ID_EX.A] < CURRENT_STATE.REGS[ID_EX.imm]) ? 1 : 0;
+		EX_MEM.op_type = 3; // 3 = imm to reg op 
+	}
 
 	else {
 		// i) Memory Reference (load/store):
