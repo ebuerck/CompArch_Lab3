@@ -366,29 +366,116 @@ void EX()
 	// We can perform one of three functions depending on the instruction type.
 	// ALU adds two operands to form the effective address and stores the result into register called ALUOutput.
 
-	// FIX THE 2 LINES BELOW!!!
+	uint32_t output = 0;
 	MIPS instruction;
-	getSingleInstruction(&instruction);
+	getSingleInstruct(&instruction,ID_EX.PC);
 
 	// ii) Register-register Operation
 	// ALUOutput <= A op B
-	if (!strcmp(instruction.opcode, "000000")) {
+	if (!strcmp(instruction.op, "000000")) {
+		// ADD & ADDU
+		if(!strcmp(instruction.funct, "100000") || !strcmp(instruction.funct, "100001")){
+			output = ID_EX.A + ID_EX.B;
+		}
+		// SUB & SUBU
+		else if(!strcmp(instruction.funct, "100010") || !strcmp(instruction.funct, "100011")){
+			output = ID_EX.A - ID_EX.B;
+		}
+		// MULT & MULTU
+		else if(!strcmp(instruction.funct, "011000") || !strcmp(instruction.funct, "011001")){
+			uint64_t product = ID_EX.A * ID_EX.B;
+			CURRENT_STATE.HI = product >> 32;
+			CURRENT_STATE.LO = (product << 32) >> 32;
+		}
+		// DIV & DIVU
+		else if(!strcmp(instruction.funct, "011010") || !strcmp(instruction.funct, "011011")){
+			CURRENT_STATE.HI = ID_EX.A % ID_EX.B;
+			CURRENT_STATE.LO = ID_EX.A / ID_EX.B;
+		}
+		// AND
+		else if(!strcmp(instruction.funct, "100100")){
+			output = ID_EX.A & ID_EX.B;
+		}
+		// OR
+		else if(!strcmp(instruction.funct, "100101")){
+			output = ID_EX.A | ID_EX.B;
+		}
+		// XOR
+		else if(!strcmp(instruction.funct, "100110")){
+			output = ID_EX.A ^ ID_EX.B;
+		}
+		// NOR
+		else if(!strcmp(instruction.funct, "100111")){
+			output = !(ID_EX.A | ID_EX.B);
+		}
+		// SLT
+		else if(!strcmp(instruction.funct, "100111")){
+			output = (ID_EX.A < ID_EX.B) ? 1 : 0;
+		}
+		// SLL
+		else if(!strcmp(instruction.funct, "000000")){
+			output = ID_EX.A << instruction.shamt;
+		}
+		// SRL
+		else if(!strcmp(instruction.funct, "000010")){
+			output = ID_EX.A >> instruction.shamt;
+		}
+		// SRA
+		else if(!strcmp(instruction.funct, "000011")){
+			output = ID_EX.A >> instruction.shamt;
+		}
 
 	}
-	// i) Memory Reference (load/store):
-	// ALUOutput <= A + imm
-	else if (1) {
-
-	}
+<<<<<<< HEAD
 	// ALU performs the operation specified by the instruction on the values stored in temporary registers A and B and places the result into ALUOutput.
 
 	/* David Huber */
 	// iii) Register-Immediate Operation
 	// ALUOutput <= A op imm
+=======
+>>>>>>> d95c88d1ce50e711c8b0f1c49c080a858c8b7446
 	else {
+		// i) Memory Reference (load/store):
+		// ALUOutput <= A + imm
+		if(!strcmp(instruction.op, "LW")) {
 
+		}
+		else if(!strcmp(instruction.op, "LB")) {
+
+		}
+		else if(!strcmp(instruction.op, "LH")) {
+
+		}
+		else if(!strcmp(instruction.op, "LUI")) {
+
+		}
+		else if(!strcmp(instruction.op, "SW")) {
+
+		}
+		else if(!strcmp(instruction.op, "SB")) {
+
+		}
+		else if(!strcmp(instruction.op, "SH")) {
+
+		}
+		else if(!strcmp(instruction.op, "MFHI")) {
+
+		}
+		else if(!strcmp(instruction.op, "MFLO")) {
+
+		}
+		else if(!strcmp(instruction.op, "MTHI")) {
+
+		}
+		else if(!strcmp(instruction.op, "MTLO")) {
+
+		}
+		// ALU performs the operation specified by the instruction on the values stored in temporary registers A and B and places the result into ALUOutput.
+		// iii) Register-Immediate Operation
+		// ALUOutput <= A op imm
 	}
 	// ALU performs the operation specified by the instruction on the value stored in temporary register A and value in register imm and places the result into ALUOutput.
+	EX_MEM.ALUOutput = output;
 }
 
 /************************************************************/
@@ -402,7 +489,7 @@ void ID()
 	// The values read from register file are placed into two temporary registers called A and B.
 	// he values stored in A and B will be used in upcoming cycles by other stages (e.g., EX, or MEM).
 	MIPS instruction;
-	getSingleInstruct(&instruction);
+	getSingleInstruct(&instruction,IF_ID.PC);
 	ID_EX.A = instruction.rs;
 	ID_EX.B = instruction.rt;
 	ID_EX.imm = instruction.immediate;
@@ -784,7 +871,7 @@ void returnRFormat(char* instruction, MIPS* hold) {
 	func[6] = '\0';
 
 	printf("%s %s, %s, %s\n",GetRFunction(func),returnRegister(rd), returnRegister(rs), returnRegister(rt));
-	hold->op = GetRFunction(func);
+	hold->op = "000000";
 	hold->rd = convertBinarytoDecimal(rd);
 	hold->rs = convertBinarytoDecimal(rs);
 	hold->rt = convertBinarytoDecimal(rt);
@@ -983,8 +1070,8 @@ void print_instruction(uint32_t addr){
 	}
 }
 
-void getSingleInstruct(MIPS* instrAddress){
-	uint32_t instr = mem_read_32(IF_ID.PC);
+void getSingleInstruct(MIPS* instrAddress, uint32_t addr){
+	uint32_t instr = mem_read_32(addr);
 
 	char string[9];
 	sprintf(string,"%08x", instr);

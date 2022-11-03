@@ -130,5 +130,5 @@ int convertBinarytoDecimal(char * binary);
 void returnRFormat(char* instruction, MIPS*);
 void returnIFormat(char* instruction, MIPS*);
 void returnJFormat(char* instruction, MIPS*);
-void getSingleInstruct(MIPS*);
+void getSingleInstruct(MIPS*, uint32_t);
 void print_instruction(uint32_t addr);
