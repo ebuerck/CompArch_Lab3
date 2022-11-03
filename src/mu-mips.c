@@ -484,17 +484,17 @@ void EX()
 		// ALUOutput <= A + imm
 		// LW
 		if(!strcmp(instruction.op, "100011")) {
-			output = CURRENT_STATE.REGS[ID_EX.A] + instruction.imm;
+			output = CURRENT_STATE.REGS[ID_EX.A] + instruction.immediate;
 			EX_MEM.op_type = 4;
 		}
 		// LB
 		else if(!strcmp(instruction.op, "100000")) {
-			output = instruction.imm;
+			output = instruction.immediate;
 			EX_MEM.op_type = 4;
 		}
 		// LH
 		else if(!strcmp(instruction.op, "100001")) {
-			output = CURRENT_STATE[ID_EX.A] >> 16;
+			output = CURRENT_STATE.REGS[ID_EX.A] >> 16;
 			EX_MEM.op_type = 4;
 		}
 		// LUI
@@ -505,17 +505,17 @@ void EX()
 		// SW
 		else if(!strcmp(instruction.op, "101011")) {
 			// What is the difference between this and LW?
-			output = CURRENT_STATE[ID_EX.A] + instruction.imm;
+			output = CURRENT_STATE.REGS[ID_EX.A] + instruction.immediate;
 			EX_MEM.op_type = 5;
 		}
 		// SB
 		else if(!strcmp(instruction.op, "101000")) {
-			output = (CURRENT_STATE[ID_EX.A] + instruction.imm) >> 7;
+			output = (CURRENT_STATE.REGS[ID_EX.A] + instruction.immediate) >> 7;
 			EX_MEM.op_type = 5;
 		}
 		// SH
 		else if(!strcmp(instruction.op, "101001")) {
-			output = (CURRENT_STATE[ID_EX.A] + instruction.imm) >> 15;
+			output = (CURRENT_STATE.REGS[ID_EX.A] + instruction.immediate) >> 15;
 			EX_MEM.op_type = 5;
 		}
 		// MFHI
@@ -530,12 +530,12 @@ void EX()
 		}
 		// MTHI
 		else if(!strcmp(instruction.op, "010001")) {
-			CURRENT_STATE.HI = CURRENT_STATE[ID_EX.A];
+			CURRENT_STATE.HI = CURRENT_STATE.REGS[ID_EX.A];
 			EX_MEM.op_type = 4;
 		}
 		// MTLO
 		else if(!strcmp(instruction.op, "010011")) {
-			CURRENT_STATE.LO = CURRENT_STATE[ID_EX.A];
+			CURRENT_STATE.LO = CURRENT_STATE.REGS[ID_EX.A];
 			EX_MEM.op_type = 4;
 		}
 	}
