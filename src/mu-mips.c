@@ -430,37 +430,38 @@ void EX()
 		// i) Memory Reference (load/store):
 		// ALUOutput <= A + imm
 		if(!strcmp(instruction.op, "LW")) {
-
+			output = CURRENT_STATE[ID_EX.A] + instruction.imm;
 		}
 		else if(!strcmp(instruction.op, "LB")) {
-
+			output = instruction.imm;
 		}
 		else if(!strcmp(instruction.op, "LH")) {
-
+			output = CURRENT_STATE[ID_EX.A] >> 16;
 		}
 		else if(!strcmp(instruction.op, "LUI")) {
-
+			output = instruction.op >> 16;
 		}
 		else if(!strcmp(instruction.op, "SW")) {
-
+			// What is the difference between this and LW?
+			output = CURRENT_STATE[ID_EX.A] + instruction.imm;
 		}
 		else if(!strcmp(instruction.op, "SB")) {
-
+			output = (CURRENT_STATE[ID_EX.A] + instruction.imm) >> 7;
 		}
 		else if(!strcmp(instruction.op, "SH")) {
-
+			output = (CURRENT_STATE[ID_EX.A] + instruction.imm) >> 15;
 		}
 		else if(!strcmp(instruction.op, "MFHI")) {
-
+			output = CURRENT_STATE.HI;
 		}
 		else if(!strcmp(instruction.op, "MFLO")) {
-
+			output = CURRENT_STATE.LO;
 		}
 		else if(!strcmp(instruction.op, "MTHI")) {
-
+			CURRENT_STATE.HI = CURRENT_STATE[ID_EX.A];
 		}
 		else if(!strcmp(instruction.op, "MTLO")) {
-
+			CURRENT_STATE.LO = CURRENT_STATE[ID_EX.A];
 		}
 		// ALU performs the operation specified by the instruction on the values stored in temporary registers A and B and places the result into ALUOutput.
 		// iii) Register-Immediate Operation
@@ -544,23 +545,6 @@ void print_program(){
 /************************************************************/
 void show_pipeline(){
 	/*IMPLEMENT THIS*/
-	printf("Current PC: %uX\n", CURRENT_STATE.PC);
-	printf("IF_ID.IR: %uX\n", IF_ID.IR);
-	printf("IF_ID.PC: %uX\n\n", IF_ID.PC);
-
-	printf("ID_EX.IR: %uX\n", ID_EX.IR);
-	printf("ID_EX.A: %u\n", ID_EX.A);
-	printf("ID_EX.B: %u\n", ID_EX.B);
-	printf("ID_EX.IMM: %uX\n\n", ID_EX.imm);
-
-	printf("EX_MEM.IR: %uX\n", EX_MEM.IR);
-	printf("EX_MEM.A: %u\n", EX_MEM.A);
-	printf("EX_MEM.B: %u\n", EX_MEM.B);
-	printf("EX_MEM.ALUOutput: %u\n\n", EX_MEM.imm);
-
-	printf("MEM_WB.IR: %uX\n", MEM_WB.IR);
-	printf("MEM_WB.ALUOutput: %u\n", MEM_WB.A);
-	printf("MEM_WB.LMD: %u\n", MEM_WB.B);
 }
 
 
