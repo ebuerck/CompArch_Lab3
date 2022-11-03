@@ -386,7 +386,6 @@ void EX()
 			uint64_t product = ID_EX.A * ID_EX.B;
 			CURRENT_STATE.HI = product >> 32;
 			CURRENT_STATE.LO = (product << 32) >> 32;
-			printf("Test\n");
 		}
 		// DIV & DIVU
 		else if(!strcmp(instruction.funct, "011010") || !strcmp(instruction.funct, "011011")){
@@ -543,6 +542,23 @@ void print_program(){
 /************************************************************/
 void show_pipeline(){
 	/*IMPLEMENT THIS*/
+	printf("Current PC: %uX\n", CURRENT_STATE.PC);
+	printf("IF_ID.IR: %uX\n", IF_ID.IR);
+	printf("IF_ID.PC: %uX\n\n", IF_ID.PC);
+
+	printf("ID_EX.IR: %uX\n", ID_EX.IR);
+	printf("ID_EX.A: %u\n", ID_EX.A);
+	printf("ID_EX.B: %u\n", ID_EX.B);
+	printf("ID_EX.IMM: %uX\n\n", ID_EX.imm);
+
+	printf("EX_MEM.IR: %uX\n", EX_MEM.IR);
+	printf("EX_MEM.A: %u\n", EX_MEM.A);
+	printf("EX_MEM.B: %u\n", EX_MEM.B);
+	printf("EX_MEM.ALUOutput: %u\n\n", EX_MEM.imm);
+
+	printf("MEM_WB.IR: %uX\n", MEM_WB.IR);
+	printf("MEM_WB.ALUOutput: %u\n", MEM_WB.A);
+	printf("MEM_WB.LMD: %u\n", MEM_WB.B);
 }
 
 
