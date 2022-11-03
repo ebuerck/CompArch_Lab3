@@ -375,54 +375,54 @@ void EX()
 	if (!strcmp(instruction.op, "000000")) {
 		// ADD & ADDU
 		if(!strcmp(instruction.funct, "100000") || !strcmp(instruction.funct, "100001")){
-			output = ID_EX.A + ID_EX.B;
+			output = CURRENT_STATE.REGS[ID_EX.A] + CURRENT_STATE.REGS[ID_EX.B];
 		}
 		// SUB & SUBU
 		else if(!strcmp(instruction.funct, "100010") || !strcmp(instruction.funct, "100011")){
-			output = ID_EX.A - ID_EX.B;
+			output = CURRENT_STATE.REGS[ID_EX.A] - CURRENT_STATE.REGS[ID_EX.B];
 		}
 		// MULT & MULTU
 		else if(!strcmp(instruction.funct, "011000") || !strcmp(instruction.funct, "011001")){
-			uint64_t product = ID_EX.A * ID_EX.B;
+			uint64_t product = CURRENT_STATE.REGS[ID_EX.A] * CURRENT_STATE.REGS[ID_EX.B];
 			CURRENT_STATE.HI = product >> 32;
 			CURRENT_STATE.LO = (product << 32) >> 32;
 		}
 		// DIV & DIVU
 		else if(!strcmp(instruction.funct, "011010") || !strcmp(instruction.funct, "011011")){
-			CURRENT_STATE.HI = ID_EX.A % ID_EX.B;
-			CURRENT_STATE.LO = ID_EX.A / ID_EX.B;
+			CURRENT_STATE.HI = CURRENT_STATE.REGS[ID_EX.A] % CURRENT_STATE.REGS[ID_EX.B];
+			CURRENT_STATE.LO = CURRENT_STATE.REGS[ID_EX.A] / CURRENT_STATE.REGS[ID_EX.B];
 		}
 		// AND
 		else if(!strcmp(instruction.funct, "100100")){
-			output = ID_EX.A & ID_EX.B;
+			output = CURRENT_STATE.REGS[ID_EX.A] & CURRENT_STATE.REGS[ID_EX.B];
 		}
 		// OR
 		else if(!strcmp(instruction.funct, "100101")){
-			output = ID_EX.A | ID_EX.B;
+			output = CURRENT_STATE.REGS[ID_EX.A] | CURRENT_STATE.REGS[ID_EX.B];
 		}
 		// XOR
 		else if(!strcmp(instruction.funct, "100110")){
-			output = ID_EX.A ^ ID_EX.B;
+			output = CURRENT_STATE.REGS[ID_EX.A] ^ CURRENT_STATE.REGS[ID_EX.B];
 		}
 		// NOR
 		else if(!strcmp(instruction.funct, "100111")){
-			output = !(ID_EX.A | ID_EX.B);
+			output = !(CURRENT_STATE.REGS[ID_EX.A] | CURRENT_STATE.REGS[ID_EX.B]);
 		}
 		// SLT
 		else if(!strcmp(instruction.funct, "100111")){
-			output = (ID_EX.A < ID_EX.B) ? 1 : 0;
+			output = (CURRENT_STATE.REGS[ID_EX.A] < CURRENT_STATE.REGS[ID_EX.B]) ? 1 : 0;
 		}
 		// SLL
 		else if(!strcmp(instruction.funct, "000000")){
-			output = ID_EX.A << instruction.shamt;
+			output = CURRENT_STATE.REGS[ID_EX.A] << instruction.shamt;
 		}
 		// SRL
 		else if(!strcmp(instruction.funct, "000010")){
-			output = ID_EX.A >> instruction.shamt;
+			output = CURRENT_STATE.REGS[ID_EX.A] >> instruction.shamt;
 		}
 		// SRA
 		else if(!strcmp(instruction.funct, "000011")){
-			output = ID_EX.A >> instruction.shamt;
+			output = CURRENT_STATE.REGS[ID_EX.A] >> instruction.shamt;
 		}
 
 	}
@@ -469,6 +469,7 @@ void EX()
 	}
 	// ALU performs the operation specified by the instruction on the value stored in temporary register A and value in register imm and places the result into ALUOutput.
 	EX_MEM.ALUOutput = output;
+	EX_MEM.PC = ID_EX.PC;
 }
 
 /************************************************************/
