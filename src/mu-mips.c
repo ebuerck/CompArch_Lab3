@@ -430,13 +430,13 @@ void EX()
 		// i) Memory Reference (load/store):
 		// ALUOutput <= A + imm
 		if(!strcmp(instruction.op, "LW")) {
-
+			output = ID_EX.A + instruction.imm;
 		}
 		else if(!strcmp(instruction.op, "LB")) {
-
+			output = instruction.imm;
 		}
 		else if(!strcmp(instruction.op, "LH")) {
-
+			output = instruction.imm >> 16;
 		}
 		else if(!strcmp(instruction.op, "LUI")) {
 
