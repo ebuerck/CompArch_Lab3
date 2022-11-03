@@ -327,7 +327,7 @@ void handle_pipeline()
 /************************************************************/
 /* writeback (WB) pipeline stage:                                                                          */
 /************************************************************/
-void WB()
+void WB()	/* David Huber */  // handle null case
 {
 	/*IMPLEMENT THIS*/
 	// In this stage, we write the result back into the destination register in register file.
@@ -344,7 +344,7 @@ void WB()
 /************************************************************/
 /* memory access (MEM) pipeline stage:                                                          */
 /************************************************************/
-void MEM()
+void MEM()	/* David Huber */
 {
 	/*IMPLEMENT THIS*/
 	// If the instruction is load, data is read from memory and stored in load memory data (LMD) register.
@@ -381,6 +381,8 @@ void EX()
 
 	}
 	// ALU performs the operation specified by the instruction on the values stored in temporary registers A and B and places the result into ALUOutput.
+
+	/* David Huber */
 	// iii) Register-Immediate Operation
 	// ALUOutput <= A op imm
 	else {
