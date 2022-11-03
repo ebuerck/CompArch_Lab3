@@ -329,14 +329,28 @@ void handle_pipeline()
 /************************************************************/
 void WB()	/* David Huber */  // handle null case
 {
+	MIPS instruction;
+	getSingleInstruct(&instruction,ID_EX.PC);
+
 	/*IMPLEMENT THIS*/
 	// In this stage, we write the result back into the destination register in register file.
 	// The result may come from LMD or ALUOutput depending on the instruction.
 	// for register-register instruction: REGS[rd] <= ALUOutput
+	if(EX_MEM.op_type == 2){
+		CURRENT_STATE.REGS[instruction.rd] = EX_MEM.ALUOutput;
+	}
 
 	// for register-immediate instruction: REGS[rt] <= ALUOutput
+	if(EX_MEM.op_type == 3){
+		CURRENT_STATE.REGS[instruction.rt] = EX_MEM.ALUOutput;
+	}
 
 	// for load instruction: REGS[rt] <= LMD
+	if(EX_MEM.op_type == 4){
+		CURRENT_STATE.REGS[instruction.rt] = EX_MEM.LMD;
+	}
+
+	MEM_WB.PC = EX_MEM.PC;
 
 	++INSTRUCTION_COUNT;
 }
@@ -349,9 +363,18 @@ void MEM()	/* David Huber */
 	/*IMPLEMENT THIS*/
 	// If the instruction is load, data is read from memory and stored in load memory data (LMD) register.
 	// for load: LMD <= MEM[ALUOutput]
+	if(EX_MEM.op_type == 4){
+		uint32_t memAddress = EX_MEM.ALUOutput + MEM_DATA_BEGIN;
+		uint32_t mem = mem_read_32(memAddress);
+		MEM_WB.LMD = mem;
+	}
 
 	// If it is store, then the value stored in register B is written into memory.
 	// for store: MEM[ALUOutput] <= B
+	if(EX_MEM.op_type == 5){
+		uint32_t memAddress = EX_MEM.ALUOutput + MEM_DATA_BEGIN;
+		mem_write_32(memAddress,EX_MEM.B);
+	}
 
 	// The address of memory to be accessed is the value computed in the previous stage and stored in ALUOutput register
 }
@@ -424,56 +447,56 @@ void EX()
 		else if(!strcmp(instruction.funct, "000011")){
 			output = ID_EX.A >> instruction.shamt;
 		}
-
+	EX_MEM.op_type = 2; // 2 = reg to reg op 
 	}
-<<<<<<< HEAD
 	// ALU performs the operation specified by the instruction on the values stored in temporary registers A and B and places the result into ALUOutput.
 
-	/* David Huber */
 	// iii) Register-Immediate Operation
 	// ALUOutput <= A op imm
-=======
->>>>>>> d95c88d1ce50e711c8b0f1c49c080a858c8b7446
+
+	EX_MEM.op_type = 3; // 3 = imm to reg op 
+
+
 	else {
 		// i) Memory Reference (load/store):
 		// ALUOutput <= A + imm
 		if(!strcmp(instruction.op, "LW")) {
-
+			
+			EX_MEM.op_type = 4; // 4 = load op
 		}
 		else if(!strcmp(instruction.op, "LB")) {
-
+			EX_MEM.op_type = 4; // 4 = load op
 		}
 		else if(!strcmp(instruction.op, "LH")) {
-
+			EX_MEM.op_type = 4; // 4 = load op
 		}
 		else if(!strcmp(instruction.op, "LUI")) {
-
+			EX_MEM.op_type = 4; // 4 = load op
 		}
 		else if(!strcmp(instruction.op, "SW")) {
 
+			EX_MEM.op_type = 5; // 5 = store op 
 		}
 		else if(!strcmp(instruction.op, "SB")) {
-
+			EX_MEM.op_type = 5; // 5 = store op
 		}
 		else if(!strcmp(instruction.op, "SH")) {
-
-		}
+			EX_MEM.op_type = 5; // 5 = store op
+		}	
 		else if(!strcmp(instruction.op, "MFHI")) {
-
+			EX_MEM.op_type = 4; // 4 = load op
 		}
 		else if(!strcmp(instruction.op, "MFLO")) {
-
+			EX_MEM.op_type = 4; // 4 = load op
 		}
 		else if(!strcmp(instruction.op, "MTHI")) {
-
+			EX_MEM.op_type = 4; // 4 = load op
 		}
 		else if(!strcmp(instruction.op, "MTLO")) {
-
+			EX_MEM.op_type = 4; // 4 = load op
 		}
-		// ALU performs the operation specified by the instruction on the values stored in temporary registers A and B and places the result into ALUOutput.
-		// iii) Register-Immediate Operation
-		// ALUOutput <= A op imm
 	}
+
 	// ALU performs the operation specified by the instruction on the value stored in temporary register A and value in register imm and places the result into ALUOutput.
 	EX_MEM.ALUOutput = output;
 }
