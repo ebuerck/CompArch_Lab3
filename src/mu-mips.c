@@ -352,7 +352,6 @@ void WB()	/* David Huber */  // handle null case
 
 	MEM_WB.PC = EX_MEM.PC;
 
-	++INSTRUCTION_COUNT;
 }
 
 /************************************************************/
