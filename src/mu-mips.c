@@ -499,7 +499,7 @@ void EX()
 		}
 		// LUI
 		else if(!strcmp(instruction.op, "001111")) {
-			output = instruction.imm >> 16;
+			output = instruction.immediate >> 16;
 			EX_MEM.op_type = 4;
 		}
 		// SW
