@@ -429,38 +429,49 @@ void EX()
 	else {
 		// i) Memory Reference (load/store):
 		// ALUOutput <= A + imm
-		if(!strcmp(instruction.op, "LW")) {
+		// LW
+		if(!strcmp(instruction.op, "100011")) {
 			output = CURRENT_STATE[ID_EX.A] + instruction.imm;
 		}
-		else if(!strcmp(instruction.op, "LB")) {
+		// LB
+		else if(!strcmp(instruction.op, "100000")) {
 			output = instruction.imm;
 		}
-		else if(!strcmp(instruction.op, "LH")) {
+		// LH
+		else if(!strcmp(instruction.op, "100001")) {
 			output = CURRENT_STATE[ID_EX.A] >> 16;
 		}
-		else if(!strcmp(instruction.op, "LUI")) {
+		// LUI
+		else if(!strcmp(instruction.op, "001111")) {
 			output = instruction.op >> 16;
 		}
-		else if(!strcmp(instruction.op, "SW")) {
+		// SW
+		else if(!strcmp(instruction.op, "101011")) {
 			// What is the difference between this and LW?
 			output = CURRENT_STATE[ID_EX.A] + instruction.imm;
 		}
-		else if(!strcmp(instruction.op, "SB")) {
+		// SB
+		else if(!strcmp(instruction.op, "101000")) {
 			output = (CURRENT_STATE[ID_EX.A] + instruction.imm) >> 7;
 		}
-		else if(!strcmp(instruction.op, "SH")) {
+		// SH
+		else if(!strcmp(instruction.op, "101001")) {
 			output = (CURRENT_STATE[ID_EX.A] + instruction.imm) >> 15;
 		}
-		else if(!strcmp(instruction.op, "MFHI")) {
+		// MFHI
+		else if(!strcmp(instruction.op, "010000")) {
 			output = CURRENT_STATE.HI;
 		}
-		else if(!strcmp(instruction.op, "MFLO")) {
+		// MFLO
+		else if(!strcmp(instruction.op, "010010")) {
 			output = CURRENT_STATE.LO;
 		}
-		else if(!strcmp(instruction.op, "MTHI")) {
+		// MTHI
+		else if(!strcmp(instruction.op, "010001")) {
 			CURRENT_STATE.HI = CURRENT_STATE[ID_EX.A];
 		}
-		else if(!strcmp(instruction.op, "MTLO")) {
+		// MTLO
+		else if(!strcmp(instruction.op, "010011")) {
 			CURRENT_STATE.LO = CURRENT_STATE[ID_EX.A];
 		}
 		// ALU performs the operation specified by the instruction on the values stored in temporary registers A and B and places the result into ALUOutput.
