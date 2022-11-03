@@ -485,6 +485,7 @@ void ID()
 	ID_EX.A = instruction.rs;
 	ID_EX.B = instruction.rt;
 	ID_EX.imm = instruction.immediate;
+	ID_EX.PC = IF_ID.PC;
 	// A <= REGS[rs]
 
 	// B <= REGS[rt]
@@ -504,10 +505,11 @@ void IF()
 	// The instruction is fetched from memory into the instruction register (IR) by using the current program counter (PC).
 	// IR <= Mem[PC]
 	CURRENT_STATE = NEXT_STATE;
-	IF_ID.IR = mem_read_32(NEXT_STATE.PC);
-
+	IF_ID.IR = mem_read_32(CURRENT_STATE.PC);
+	IF_ID.PC = CURRENT_STATE.PC;
 	// The PC is then incremented by 4 to address the next instruction.
 	// PC <= PC + 4
+	NEXT_STATE = CURRENT_STATE;
 	NEXT_STATE.PC += 4;
 	// IR is used to hold the instruction (that is 32-bit) that will be needed in subsequent cycle during the instruction decode stage.
 }
