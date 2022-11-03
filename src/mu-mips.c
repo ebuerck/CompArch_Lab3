@@ -484,7 +484,7 @@ void EX()
 		// ALUOutput <= A + imm
 		// LW
 		if(!strcmp(instruction.op, "100011")) {
-			output = CURRENT_STATE[ID_EX.A] + instruction.imm;
+			output = CURRENT_STATE.REGS[ID_EX.A] + instruction.imm;
 			EX_MEM.op_type = 4;
 		}
 		// LB
