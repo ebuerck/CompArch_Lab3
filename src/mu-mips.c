@@ -398,54 +398,54 @@ void EX()
 	if (!strcmp(instruction.op, "000000")) {
 		// ADD & ADDU
 		if(!strcmp(instruction.funct, "100000") || !strcmp(instruction.funct, "100001")){
-			output = ID_EX.A + ID_EX.B;
+			output = CURRENT_STATE.REGS[ID_EX.A] + CURRENT_STATE.REGS[ID_EX.B];
 		}
 		// SUB & SUBU
 		else if(!strcmp(instruction.funct, "100010") || !strcmp(instruction.funct, "100011")){
-			output = ID_EX.A - ID_EX.B;
+			output = CURRENT_STATE.REGS[ID_EX.A] - CURRENT_STATE.REGS[ID_EX.B];
 		}
 		// MULT & MULTU
 		else if(!strcmp(instruction.funct, "011000") || !strcmp(instruction.funct, "011001")){
-			uint64_t product = ID_EX.A * ID_EX.B;
+			uint64_t product = CURRENT_STATE.REGS[ID_EX.A] * CURRENT_STATE.REGS[ID_EX.B];
 			CURRENT_STATE.HI = product >> 32;
 			CURRENT_STATE.LO = (product << 32) >> 32;
 		}
 		// DIV & DIVU
 		else if(!strcmp(instruction.funct, "011010") || !strcmp(instruction.funct, "011011")){
-			CURRENT_STATE.HI = ID_EX.A % ID_EX.B;
-			CURRENT_STATE.LO = ID_EX.A / ID_EX.B;
+			CURRENT_STATE.HI = CURRENT_STATE.REGS[ID_EX.A] % CURRENT_STATE.REGS[ID_EX.B];
+			CURRENT_STATE.LO = CURRENT_STATE.REGS[ID_EX.A] / CURRENT_STATE.REGS[ID_EX.B];
 		}
 		// AND
 		else if(!strcmp(instruction.funct, "100100")){
-			output = ID_EX.A & ID_EX.B;
+			output = CURRENT_STATE.REGS[ID_EX.A] & CURRENT_STATE.REGS[ID_EX.B];
 		}
 		// OR
 		else if(!strcmp(instruction.funct, "100101")){
-			output = ID_EX.A | ID_EX.B;
+			output = CURRENT_STATE.REGS[ID_EX.A] | CURRENT_STATE.REGS[ID_EX.B];
 		}
 		// XOR
 		else if(!strcmp(instruction.funct, "100110")){
-			output = ID_EX.A ^ ID_EX.B;
+			output = CURRENT_STATE.REGS[ID_EX.A] ^ CURRENT_STATE.REGS[ID_EX.B];
 		}
 		// NOR
 		else if(!strcmp(instruction.funct, "100111")){
-			output = !(ID_EX.A | ID_EX.B);
+			output = !(CURRENT_STATE.REGS[ID_EX.A] | CURRENT_STATE.REGS[ID_EX.B]);
 		}
 		// SLT
 		else if(!strcmp(instruction.funct, "100111")){
-			output = (ID_EX.A < ID_EX.B) ? 1 : 0;
+			output = (CURRENT_STATE.REGS[ID_EX.A] < CURRENT_STATE.REGS[ID_EX.B]) ? 1 : 0;
 		}
 		// SLL
 		else if(!strcmp(instruction.funct, "000000")){
-			output = ID_EX.A << instruction.shamt;
+			output = CURRENT_STATE.REGS[ID_EX.A] << instruction.shamt;
 		}
 		// SRL
 		else if(!strcmp(instruction.funct, "000010")){
-			output = ID_EX.A >> instruction.shamt;
+			output = CURRENT_STATE.REGS[ID_EX.A] >> instruction.shamt;
 		}
 		// SRA
 		else if(!strcmp(instruction.funct, "000011")){
-			output = ID_EX.A >> instruction.shamt;
+			output = CURRENT_STATE.REGS[ID_EX.A] >> instruction.shamt;
 		}
 	EX_MEM.op_type = 2; // 2 = reg to reg op 
 	}
@@ -460,6 +460,7 @@ void EX()
 	else {
 		// i) Memory Reference (load/store):
 		// ALUOutput <= A + imm
+<<<<<<< HEAD
 		if(!strcmp(instruction.op, "LW")) {
 			
 			EX_MEM.op_type = 4; // 4 = load op
@@ -494,11 +495,58 @@ void EX()
 		}
 		else if(!strcmp(instruction.op, "MTLO")) {
 			EX_MEM.op_type = 4; // 4 = load op
+=======
+		// LW
+		if(!strcmp(instruction.op, "100011")) {
+			output = CURRENT_STATE[ID_EX.A] + instruction.imm;
+		}
+		// LB
+		else if(!strcmp(instruction.op, "100000")) {
+			output = instruction.imm;
+		}
+		// LH
+		else if(!strcmp(instruction.op, "100001")) {
+			output = CURRENT_STATE[ID_EX.A] >> 16;
+		}
+		// LUI
+		else if(!strcmp(instruction.op, "001111")) {
+			output = instruction.op >> 16;
+		}
+		// SW
+		else if(!strcmp(instruction.op, "101011")) {
+			// What is the difference between this and LW?
+			output = CURRENT_STATE[ID_EX.A] + instruction.imm;
+		}
+		// SB
+		else if(!strcmp(instruction.op, "101000")) {
+			output = (CURRENT_STATE[ID_EX.A] + instruction.imm) >> 7;
+		}
+		// SH
+		else if(!strcmp(instruction.op, "101001")) {
+			output = (CURRENT_STATE[ID_EX.A] + instruction.imm) >> 15;
+		}
+		// MFHI
+		else if(!strcmp(instruction.op, "010000")) {
+			output = CURRENT_STATE.HI;
+		}
+		// MFLO
+		else if(!strcmp(instruction.op, "010010")) {
+			output = CURRENT_STATE.LO;
+		}
+		// MTHI
+		else if(!strcmp(instruction.op, "010001")) {
+			CURRENT_STATE.HI = CURRENT_STATE[ID_EX.A];
+		}
+		// MTLO
+		else if(!strcmp(instruction.op, "010011")) {
+			CURRENT_STATE.LO = CURRENT_STATE[ID_EX.A];
+>>>>>>> cf83046ff7100c1c71a52ac67d8e695ebbcff2ec
 		}
 	}
 
 	// ALU performs the operation specified by the instruction on the value stored in temporary register A and value in register imm and places the result into ALUOutput.
 	EX_MEM.ALUOutput = output;
+	EX_MEM.PC = ID_EX.PC;
 }
 
 /************************************************************/
@@ -516,6 +564,7 @@ void ID()
 	ID_EX.A = instruction.rs;
 	ID_EX.B = instruction.rt;
 	ID_EX.imm = instruction.immediate;
+	ID_EX.PC = IF_ID.PC;
 	// A <= REGS[rs]
 
 	// B <= REGS[rt]
@@ -535,10 +584,11 @@ void IF()
 	// The instruction is fetched from memory into the instruction register (IR) by using the current program counter (PC).
 	// IR <= Mem[PC]
 	CURRENT_STATE = NEXT_STATE;
-	IF_ID.IR = mem_read_32(NEXT_STATE.PC);
-
+	IF_ID.IR = mem_read_32(CURRENT_STATE.PC);
+	IF_ID.PC = CURRENT_STATE.PC;
 	// The PC is then incremented by 4 to address the next instruction.
 	// PC <= PC + 4
+	NEXT_STATE = CURRENT_STATE;
 	NEXT_STATE.PC += 4;
 	// IR is used to hold the instruction (that is 32-bit) that will be needed in subsequent cycle during the instruction decode stage.
 }
