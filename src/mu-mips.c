@@ -25,6 +25,7 @@ void help() {
 	printf("low <val>\t-- set the LO register to <val>\n");
 	printf("print\t-- print the program loaded into memory\n");
 	printf("show\t-- print the current content of the pipeline registers\n");
+	printf("Forwarding\t-- Enabled or disable the forwarding for the Pipeline\n");
 	printf("?\t-- display help menu\n");
 	printf("quit\t-- exit the simulator\n\n");
 	printf("------------------------------------------------------------------\n\n");
@@ -235,6 +236,15 @@ void handle_command() {
 		case 'p':
 			print_program();
 			break;
+		case 'F':
+		case 'f':
+		if(ENABLE_FORWARDING == 0)
+			ENABLE_FORWARDING = 1;
+		else
+			ENABLE_FORWARDING = 0;
+
+		ENABLE_FORWARDING == 0 ? printf("Forwarding OFF\n") : printf("Forwarding ON\n");
+		break;
 		default:
 			printf("Invalid Command.\n");
 			break;
@@ -332,10 +342,6 @@ void WB()	/* David Huber */  // handle null case
 	MIPS instruction;
 	getSingleInstruct(&instruction,ID_EX.PC);
 
-	/*IMPLEMENT THIS*/
-	// In this stage, we write the result back into the destination register in register file.
-	// The result may come from LMD or ALUOutput depending on the instruction.
-	// for register-register instruction: REGS[rd] <= ALUOutput
 	if(EX_MEM.op_type == 2){
 		CURRENT_STATE.REGS[instruction.rd] = EX_MEM.ALUOutput;
 	}
@@ -359,6 +365,9 @@ void WB()	/* David Huber */  // handle null case
 /************************************************************/
 void MEM()	/* David Huber */
 {
+	MIPS instruction, MEM_WB_instruction;
+	getSingleInstruct(&instruction,EX_MEM.PC);
+	getSingleInstruct(&MEM_WB_instruction,MEM_WB.PC);
 	/*IMPLEMENT THIS*/
 	// If the instruction is load, data is read from memory and stored in load memory data (LMD) register.
 	// for load: LMD <= MEM[ALUOutput]
@@ -366,6 +375,23 @@ void MEM()	/* David Huber */
 		uint32_t memAddress = EX_MEM.ALUOutput + MEM_DATA_BEGIN;
 		uint32_t mem = mem_read_32(memAddress);
 		MEM_WB.LMD = mem;
+
+		// Check for fowarding from the MEM stage
+		if(ENABLE_FORWARDING){
+			// Handle Forwarding from EX
+			if((CURRENT_STATE.REGS[instruction.rd] != 0) && !((CURRENT_STATE.REGS[instruction.rd] != 0) && (CURRENT_STATE.REGS[instruction.rd] == CURRENT_STATE.REGS[ID_EX.A])
+		&& (CURRENT_STATE.REGS[MEM_WB_instruction.rd] == CURRENT_STATE.REGS[ID_EX.A]))) {
+				ForwardA = 01;
+			}
+			else if((CURRENT_STATE.REGS[instruction.rd] != 0) && !((CURRENT_STATE.REGS[instruction.rd] != 0) && (CURRENT_STATE.REGS[instruction.rd] == CURRENT_STATE.REGS[ID_EX.B])
+		&& (CURRENT_STATE.REGS[MEM_WB_instruction.rd] == CURRENT_STATE.REGS[ID_EX.B]))) {
+				ForwardB = 01;
+			}
+			else{
+				ForwardA = 0;
+				ForwardB = 0;
+			}
+		} // End of Forwarding Check
 	}
 
 	// If it is store, then the value stored in register B is written into memory.
@@ -375,7 +401,7 @@ void MEM()	/* David Huber */
 		mem_write_32(memAddress,EX_MEM.B);
 	}
 
-	// The address of memory to be accessed is the value computed in the previous stage and stored in ALUOutput register
+
 }
 
 /************************************************************/
@@ -446,7 +472,7 @@ void EX()
 		else if(!strcmp(instruction.funct, "000011")){
 			output = CURRENT_STATE.REGS[ID_EX.A] >> instruction.shamt;
 		}
-	EX_MEM.op_type = 2; // 2 = reg to reg op 
+		EX_MEM.op_type = 2; // 2 = reg to reg op
 	}
 	// ALU performs the operation specified by the instruction on the values stored in temporary registers A and B and places the result into ALUOutput.
 
@@ -456,27 +482,27 @@ void EX()
 	// ADDI ADDIU
 	if(!strcmp(instruction.op, "001000") || !strcmp(instruction.op, "001001")){
 		output = CURRENT_STATE.REGS[ID_EX.A] + CURRENT_STATE.REGS[ID_EX.imm];
-		EX_MEM.op_type = 3; // 3 = imm to reg op 
+		EX_MEM.op_type = 3; // 3 = imm to reg op
 	}
 	// ANDI
 	if(!strcmp(instruction.op, "001100")){
 		output = CURRENT_STATE.REGS[ID_EX.A] & CURRENT_STATE.REGS[ID_EX.imm];
-		EX_MEM.op_type = 3; // 3 = imm to reg op 
+		EX_MEM.op_type = 3; // 3 = imm to reg op
 	}
 	// ORI
 	if(!strcmp(instruction.op, "001101")){
 		output = CURRENT_STATE.REGS[ID_EX.A] | CURRENT_STATE.REGS[ID_EX.imm];
-		EX_MEM.op_type = 3; // 3 = imm to reg op 
+		EX_MEM.op_type = 3; // 3 = imm to reg op
 	}
 	// XORI
 	if(!strcmp(instruction.op, "001110")){
 		output = CURRENT_STATE.REGS[ID_EX.A] ^ CURRENT_STATE.REGS[ID_EX.imm];
-		EX_MEM.op_type = 3; // 3 = imm to reg op 
+		EX_MEM.op_type = 3; // 3 = imm to reg op
 	}
 	// SLTI
 	if(!strcmp(instruction.op, "001010")){
 		output = (CURRENT_STATE.REGS[ID_EX.A] < CURRENT_STATE.REGS[ID_EX.imm]) ? 1 : 0;
-		EX_MEM.op_type = 3; // 3 = imm to reg op 
+		EX_MEM.op_type = 3; // 3 = imm to reg op
 	}
 
 	else {
@@ -540,6 +566,20 @@ void EX()
 		}
 	}
 
+	if(ENABLE_FORWARDING){
+		// Handle Forwarding from EX
+		if(output && (CURRENT_STATE.REGS[instruction.rd] != 0) && (CURRENT_STATE.REGS[instruction.rd] == CURRENT_STATE.REGS[ID_EX.A])) {
+			ForwardA = 10;
+		}
+		else if(output && (CURRENT_STATE.REGS[instruction.rd] != 0) && (CURRENT_STATE.REGS[instruction.rd] == CURRENT_STATE.REGS[ID_EX.B])){
+			ForwardB = 10;
+		}
+		else{
+			ForwardA = 0;
+			ForwardB = 0;
+		}
+	}
+
 	// ALU performs the operation specified by the instruction on the value stored in temporary register A and value in register imm and places the result into ALUOutput.
 	EX_MEM.ALUOutput = output;
 	EX_MEM.PC = ID_EX.PC;
@@ -557,8 +597,21 @@ void ID()
 	// he values stored in A and B will be used in upcoming cycles by other stages (e.g., EX, or MEM).
 	MIPS instruction;
 	getSingleInstruct(&instruction,IF_ID.PC);
-	ID_EX.A = instruction.rs;
-	ID_EX.B = instruction.rt;
+	if(ENABLE_FORWARDING){
+		if(ForwardA == 10)
+			ID_EX.A = EX_MEM.ALUOutput;
+		if(ForwardB == 10)
+			ID_EX.B = EX_MEM.ALUOutput;
+		if(ForwardA == 01)
+			ID_EX.A = MEM_WB.LMD;
+		if(ForwardB == 01)
+			ID_EX.B = MEM_WB.LMD;
+	}
+	else{
+		ID_EX.A = instruction.rs;
+		ID_EX.B = instruction.rt;
+	}
+
 	ID_EX.imm = instruction.immediate;
 	ID_EX.PC = IF_ID.PC;
 	// A <= REGS[rs]
