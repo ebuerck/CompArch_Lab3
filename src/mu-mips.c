@@ -590,13 +590,20 @@ void EX()
 /************************************************************/
 void ID()
 {
+	MIPS instruction,EX_MEM_instruct, MEM_WB_instruct;
+	getSingleInstruct(&instruction,IF_ID.PC);
+	getSingleInstruct(&EX_MEM_instruct,EX_MEM.PC);
+	getSingleInstruct(&MEM_WB_instruct,MEM_WB.PC);
+
+	// reset stall flag so check can be done correctly
+	STALL_FLAG = 0;
+	
 	/*IMPLEMENT THIS*/
 	// In this stage, the instruction is decoded (i.e., opcode and operands are extracted), and the content of the register file is read.
 	// rs and rt are the register specifiers that indicate which registers to read from.
 	// The values read from register file are placed into two temporary registers called A and B.
 	// he values stored in A and B will be used in upcoming cycles by other stages (e.g., EX, or MEM).
-	MIPS instruction;
-	getSingleInstruct(&instruction,IF_ID.PC);
+	
 	if(ENABLE_FORWARDING){
 		if(ForwardA == 10)
 			ID_EX.A = EX_MEM.ALUOutput;
@@ -611,9 +618,30 @@ void ID()
 		ID_EX.A = instruction.rs;
 		ID_EX.B = instruction.rt;
 	}
+	
 
-	ID_EX.imm = instruction.immediate;
-	ID_EX.PC = IF_ID.PC;
+	// STALL CHECK
+	if(((EX_MEM.op_type = 2)||(EX_MEM.op_type = 3))&&(CURRENT_STATE.REGS[EX_MEM_instruct.rd] != 0)&&(CURRENT_STATE.REGS[EX_MEM_instruct.rd] = CURRENT_STATE.REGS[ID_EX.A])){
+		STALL_FLAG = 1;
+	}
+	else if(((EX_MEM.op_type = 2)||(EX_MEM.op_type = 3))&&(CURRENT_STATE.REGS[EX_MEM_instruct.rd] != 0)&&(CURRENT_STATE.REGS[EX_MEM_instruct.rd] = CURRENT_STATE.REGS[ID_EX.B])){
+		STALL_FLAG = 1;
+	}
+	else if(((MEM_WB.op_type = 2)||(MEM_WB.op_type = 3))&&(CURRENT_STATE.REGS[MEM_WB_instruct.rd] != 0)&&(CURRENT_STATE.REGS[MEM_WB_instruct.rd] = CURRENT_STATE.REGS[ID_EX.A])){
+		STALL_FLAG = 1;
+	}
+	else if(((MEM_WB.op_type = 2)||(MEM_WB.op_type = 3))&&(CURRENT_STATE.REGS[MEM_WB_instruct.rd]  != 0)&&(CURRENT_STATE.REGS[MEM_WB_instruct.rd] = CURRENT_STATE.REGS[ID_EX.B])){
+		STALL_FLAG = 1;
+	}
+
+	if(STALL_FLAG == 0){
+		ID_EX.imm = instruction.immediate;
+		ID_EX.PC = IF_ID.PC;
+	}else{
+		printf("Pipeline stalled in ID stage\n");
+	}
+
+
 	// A <= REGS[rs]
 
 	// B <= REGS[rt]
@@ -637,8 +665,12 @@ void IF()
 	IF_ID.PC = CURRENT_STATE.PC;
 	// The PC is then incremented by 4 to address the next instruction.
 	// PC <= PC + 4
-	NEXT_STATE = CURRENT_STATE;
-	NEXT_STATE.PC += 4;
+	if(STALL_FLAG == 0){
+		NEXT_STATE = CURRENT_STATE;
+		NEXT_STATE.PC += 4;
+	}else{
+		printf("Pipeline stalled in IF stage\n");
+	}
 	// IR is used to hold the instruction (that is 32-bit) that will be needed in subsequent cycle during the instruction decode stage.
 }
 
